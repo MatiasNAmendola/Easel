@@ -2,7 +2,12 @@
 
 class Controller {
 
+    const ENGINE_MUSTACHE = 'mustache';
+    const ENGINE_PHP = 'php';
+
     protected $__tpl_data = array();
+
+    protected $engine = self::ENGINE_MUSTACHE;
 
     protected function getMustacheOpts() {
         return array(
@@ -18,21 +23,22 @@ class Controller {
         $user = $request->getUser();
         Feature::setUser($user);
 
-        //ob_start();
+        ob_start();
         if (in_array($name, $this->actions)) {
             $this->$name($request, $response);
         }
-        //ob_get_clean();
+        ob_get_clean();
         $response->serve();
     }
 
     protected function render($tpl) {
-        $path = TPL_DIR.'pages/'.$tpl.'.mustache';
-        if (file_exists($path)) {
-            $engine = new Mustache_Engine($this->getMustacheOpts());
-            $tpl = file_get_contents($path);
-            return $engine->render($tpl, $this->__tpl_data);
+        if ($this->engine == self::ENGINE_MUSTACHE) {
+            $engine = new TemplateEngine_Mustache($this->getMustacheOpts());
         }
+        if ($this->engine == self::ENGINE_PHP) {
+            $engine = new TemplateEngine_PHP([]);
+        }
+        return $engine->render($tpl, $this->__tpl_data);
     }
 
     protected function assign($var, $value=array()) {
