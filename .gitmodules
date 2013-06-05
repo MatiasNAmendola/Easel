@@ -1,0 +1,6 @@
+[submodule "vendors/mustache"]
+	path = vendors/mustache
+	url = https://github.com/bobthecow/mustache.php.git
+[submodule "vendors/phpunit"]
+	path = vendors/phpunit
+	url = https://github.com/sebastianbergmann/phpunit.git
